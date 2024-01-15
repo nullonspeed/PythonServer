@@ -54,11 +54,12 @@ client_socket, client_address = server_socket.accept()
 
 try:
     while True:
-        server_socket.listen()
-        client_socket, client_address = server_socket.accept()
+        #server_socket.listen()
+        #client_socket, client_address = server_socket.accept()
         recived_data = client_socket.recv(1024)
-        if recived_data is not '':
+        if recived_data.decode('utf-8') is not '':
             print(recived_data.decode('utf-8'))
+            client_socket.sendall('funktioniert')
 finally:
 
     server.stop()
