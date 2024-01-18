@@ -2,7 +2,7 @@ from opcua import ua, Server
 import sys
 import time
 import socket
-
+import json
 #def data_change_handler(var, val):
  #   print(f"Variable {var} has changed to {val}")
 
@@ -47,19 +47,38 @@ myvar.set_writable()
 #var.set_attribute(10, ua.NodeId(ua.ObjectIds.Int32))  # DataTy
 server.start()
 
-server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+#vartest = myobj.add_variable(idx, 'testing', 1)
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind(("localhost", 484))
 server_socket.listen()
 client_socket, client_address = server_socket.accept()
+
 
 try:
     while True:
         #server_socket.listen()
         #client_socket, client_address = server_socket.accept()
-        recived_data = client_socket.recv(1024)
+        recived_data = client_socket.recv(2048)
         if recived_data.decode('utf-8') is not '':
-            print(recived_data.decode('utf-8'))
-            client_socket.sendall('funktioniert')
+            #print(recived_data)
+            temp = recived_data.decode('utf-8')
+            #print(temp)
+            #temp1 = temp.split(' ')
+            jsonstring = json.loads(temp)
+            #print(jsonstring)
+            #print(jsonstring[0])
+            print(jsonstring[0]['VariableName'])
+            for liste in range(len(jsonstring)):
+                vartest = myobj.add_variable(idx, jsonstring[liste]['VariableName'], 0)
+                vartest.set_writable()
+            #vartest = myobj.add_variable(idx, temp1[1], 0)
+            #vartest = myobj.add_variable(idx, 'testing', 1, 1)
+
+            #vartest.set_writable()
+            #print(recived_data.decode('utf-8'))
+            #client_socket.sendall('funktioniert')
+            server_socket.close()
 finally:
 
     server.stop()
