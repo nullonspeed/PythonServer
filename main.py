@@ -55,11 +55,17 @@ server_socket.listen()
 client_socket, client_address = server_socket.accept()
 
 
+class Werteliste():
+    def __init__(self,wInterface, variablenname):
+        self.WInterface = wInterface
+        self.Variablenname = variablenname
+
+
 try:
     while True:
         #server_socket.listen()
         #client_socket, client_address = server_socket.accept()
-        recived_data = client_socket.recv(2048)
+        recived_data = client_socket.recv(4096)
         if recived_data.decode('utf-8') is not '':
             #print(recived_data)
             temp = recived_data.decode('utf-8')
@@ -69,9 +75,27 @@ try:
             #print(jsonstring)
             #print(jsonstring[0])
             print(jsonstring[0]['VariableName'])
+            variablenListe = []
+            InterfaceList = []
             for liste in range(len(jsonstring)):
-                vartest = myobj.add_variable(idx, jsonstring[liste]['VariableName'], 0)
-                vartest.set_writable()
+                wInterfaceString=jsonstring[liste]['WorkflowInterfaceName']
+                v1 = Werteliste(wInterfaceString, jsonstring[liste]['VariableName'])
+                if not InterfaceList.__contains__(wInterfaceString):
+                    InterfaceList.append(wInterfaceString)
+                variablenListe.append(v1)
+
+
+                #vartest = myobj.add_variable(idx, jsonstring[liste]['WorkflowInterfaceName']+"."+jsonstring[liste]['VariableName'], 0)
+                #vartest.set_writable()
+
+            for interface in InterfaceList:
+                tempObject = objects.add_object(idx, interface)
+                for wert in variablenListe:
+                    if wert.WInterface == interface:
+                        vartest = tempObject.add_variable(idx, wert.WInterface+'.'+wert.Variablenname, 0)
+                        vartest.set_writable()
+
+                #print(wert.WInterface+"."+wert.Variablenname)
             #vartest = myobj.add_variable(idx, temp1[1], 0)
             #vartest = myobj.add_variable(idx, 'testing', 1, 1)
 
