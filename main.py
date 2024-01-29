@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 from opcua import ua, Server
 import sys
 import time
@@ -23,10 +25,27 @@ server.set_security_policy = [
     ua.SecurityPolicyType.Basic256_SignAndEncrypt,
     ua.SecurityPolicyType.Basic256Sha256_Sign
 ]
-
+#print(objects.add_data_type(idx, "String", description=None))
 #node_id = "ns=2;i=1;"
+
+
+
+
+
+
+
 myobj = objects.add_object(idx, "MyObject")
-myvar = myobj.add_variable(idx, "MyVariable", 0)
+
+
+#Datentyp Int64 als normale Zahl wird normal verschickt. Datentyp DateTime funktioniert genau so. Datentyp String Direkt auch, Sonderwerte oder z.b.
+# hex(0) wird als string verschickt, Double kann auch verschickt werden, aber der Datentyp ändert nur as Attribut des datetyps
+#int16= datatype 4 funktioniert, wenn man im UA Expert auf die variablen clickt um den Wert zu ändern und dan Enter drückt
+#bool in beiden Datentyp 1, und funktioniert, also im cybernetic config und opc ua
+#byte ist 2 im config tool und 3 im UA Expert
+myvar = myobj.add_variable(idx, "MyVariable", 0, datatype=3)
+#str(0), datatype=12
+#myvar = myobj.add_variable_type(idx, "MyVariable", 0.0)
+#myvar.set_data_type(ua.VariantType.String)
 #var = server.nodes.objects.add_variable(idx, node_id, "MyVariable", 1)
 myvar.set_writable()
 
