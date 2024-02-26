@@ -2,7 +2,6 @@ from datetime import date, datetime
 
 from opcua import ua, Server
 import sys
-import time
 import socket
 import json
 #def data_change_handler(var, val):
@@ -75,10 +74,12 @@ client_socket, client_address = server_socket.accept()
 
 
 class Werteliste():
-    def __init__(self,wInterface, variablenname):
+    def __init__(self,wInterface, variablenname, datentyp):
         self.WInterface = wInterface
         self.Variablenname = variablenname
+        self.Datentyp = datentyp
 
+#datentypen dictionary machen mit tobis werte
 
 try:
     while True:
@@ -97,8 +98,8 @@ try:
             variablenListe = []
             InterfaceList = []
             for liste in range(len(jsonstring)):
-                wInterfaceString=jsonstring[liste]['WorkflowInterfaceName']
-                v1 = Werteliste(wInterfaceString, jsonstring[liste]['VariableName'])
+                wInterfaceString = jsonstring[liste]['WorkflowInterfaceName']
+                v1 = Werteliste(wInterfaceString, jsonstring[liste]['VariableName'], jsonstring[liste]['PlcVariableType'])
                 if not InterfaceList.__contains__(wInterfaceString):
                     InterfaceList.append(wInterfaceString)
                 variablenListe.append(v1)
@@ -113,6 +114,7 @@ try:
                     if wert.WInterface == interface:
                         vartest = tempObject.add_variable(idx, wert.WInterface+'.'+wert.Variablenname, 0)
                         vartest.set_writable()
+                        print(wert.Datentyp)
 
                 #print(wert.WInterface+"."+wert.Variablenname)
             #vartest = myobj.add_variable(idx, temp1[1], 0)
